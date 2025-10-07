@@ -6,31 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Palm Trace</title>
 
+    <!-- icon bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     <!-- Favicon -->
-    <link rel="shortcut icon" href="./assets/images/favicon.ico" />
+    <link rel="shortcut icon" href="{{ asset('./assets/images/favicon.ico') }}" />
 
     <!-- Library / Plugin Css Build -->
-    <link rel="stylesheet" href="./assets/css/core/libs.min.css" />
+    <link rel="stylesheet" href="{{ asset('./assets/css/core/libs.min.css') }}" />
 
     <!-- Aos Animation Css -->
-    <link rel="stylesheet" href="./assets/vendor/aos/dist/aos.css" />
+    <link rel="stylesheet" href="{{ asset('./assets/vendor/aos/dist/aos.css') }}" />
 
     <!-- Hope Ui Design System Css -->
-    <link rel="stylesheet" href="./assets/css/hope-ui.css" />
+    <link rel="stylesheet" href="{{ asset('./assets/css/hope-ui.css') }}" />
 
     <!-- Custom Css -->
-    <link rel="stylesheet" href="./assets/css/custom.css" />
+    <link rel="stylesheet" href="{{ asset('./assets/css/custom.css') }}" />
 
     <!-- Dark Css -->
-    <link rel="stylesheet" href="./assets/css/dark.min.css" />
+    <link rel="stylesheet" href="{{ asset('./assets/css/dark.min.css') }}" />
 
     <!-- Customizer Css -->
-    <link rel="stylesheet" href="./assets/css/customizer.min.css" />
+    <link rel="stylesheet" href="{{ asset('./assets/css/customizer.min.css') }}" />
 
     <!-- RTL Css -->
-    <link rel="stylesheet" href="./assets/css/rtl.min.css" />
+    <link rel="stylesheet" href="{{ asset('./assets/css/rtl.min.css') }}" />
 
-    <!-- Leaflet CSS -->
+    <!-- Leaflet CSS (CDN) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 </head>

@@ -40,18 +40,28 @@
                                     </a>
                                     <h2 class="mb-2 text-center">Sign In</h2>
                                     <p class="text-center">Login to manage.</p>
-                                    <form>
+                                    @if ($errors->any())
+                                    <div style="color:red;">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
+                                    <form method="POST" action="{{ route('login') }}">
+                                    @csrf
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label for="email" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="email" aria-describedby="email" placeholder=" ">
+                                                    <label class="form-label">Username</label>
+                                                    <input type="text" name="username" class="form-control" placeholder=" ">
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
                                                 <div class="form-group">
                                                     <label for="password" class="form-label">Password</label>
-                                                    <input type="password" class="form-control" id="password" aria-describedby="password" placeholder=" ">
+                                                    <input type="password" name="password" class="form-control" placeholder=" ">
                                                 </div>
                                             </div>
                                         </div>
