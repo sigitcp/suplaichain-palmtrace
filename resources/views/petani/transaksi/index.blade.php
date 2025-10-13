@@ -2,162 +2,150 @@
 @section('container')
 
 <div class="container-fluid content-inner py-3">
-    <div class="row">
-        
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-</div>
+@endif
 
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
 
-@endsection
-<!-- <div class="col-sm-12 col-lg-12">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+
+            {{-- Tombol Buat Penjualan --}}
+            @if ($tampilPanen > 0 && !$penjualanAktif)
+                <div class="text-center mb-3">
+                    <form action="{{ route('petani.transaksi.store') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-success px-4">Buat Penjualan</button>
+                    </form>
+                </div>
+            @else
+                <div class="text-center mb-3">
+                    @if ($penjualanAktif)
+                        <button class="btn btn-secondary px-4" disabled>Menunggu Transaksi Selesai</button>
+                    @else
+                        <button class="btn btn-secondary px-4" disabled>Tidak Ada Panen</button>
+                    @endif
+                </div>
+            @endif
+
+            {{-- Daftar Penjualan --}}
+            {{-- Riwayat Penjualan (table bawah) --}}
+        <div class="col-sm-12 mt-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">transaksi</h4>
+                        <h4 class="card-title">Riwayat Penjualan</h4>
                     </div>
                 </div>
+
                 <div class="card-body">
-                    <form id="form-wizard1" class="mt-3 text-center">
-                        <ul id="top-tab-list" class="p-0 row list-inline">
-                            <li class="mb-2 col-lg-4 col-md-6 text-start active" id="account">
-                                <a href="javascript:void();">
-                                    <div class="iq-icon me-3">
-                                        <svg class="svg-icon icon-20" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <span class="dark-wizard">Pembelian</span>
-                                </a>
-                            </li>
-                            <li id="personal" class="mb-2 col-lg-4 col-md-6 text-start">
-                                <a href="javascript:void();">
-                                    <div class="iq-icon me-3">
-                                        <svg class="svg-icon icon-20" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <span class="dark-wizard">Pengambilan</span>
-                                </a>
-                            </li>
-                            <li id="confirm" class="mb-2 col-lg-4 col-md-6 text-start">
-                                <a href="javascript:void();">
-                                    <div class="iq-icon me-3">
-                                        <svg class="svg-icon icon-20" xmlns="http://www.w3.org/2000/svg" width="20"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="dark-wizard">Selesai</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <fieldset>
-                            <div class="form-card text-start">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h3 class="mb-4">Detail Pembeli TBS:</h3>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Nama Pembeli: </label>
-                                            <input class="form-control" Value="Koperasi ABC">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">kontak: </label>
-                                            <input class="form-control" Value="08969647579">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Nomor Armada: </label>
-                                            <input class="form-control" Value="KB 2162 OC">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Tanggal Penjemputan: </label>
-                                            <input class="form-control" Value="9 oktober 2025">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" name="next" class="btn btn-primary next action-button float-end"
-                                value="Next">Next</button>
-                        </fieldset>
-                        <fieldset>
-                            <div class="form-card text-start">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h3 class="mb-4">Detail Pembelian:</h3>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Jumlah TBS yang diambil: </label>
-                                            <input class="form-control" Value="150 Kg">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Harga Perkilo: </label>
-                                            <input class="form-control" Value="Rp. 3000">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Kualitas: </label>
-                                            <input class="form-control" Value="Cukup">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Total Transaksi: </label>
-                                            <input class="form-control" Value="Rp. 150000">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" name="next" class="btn btn-primary next action-button float-end"
-                                value="Next">Next</button>
-                            <button type="button" name="previous"
-                                class="btn btn-dark previous action-button-previous float-end me-1 text-white"
-                                value="Previous">Previous</button>
-                        </fieldset>
-                        <fieldset>
-                            <div class="form-card">
-                                <div class="row">
-                                    <div class="col-7">
-                                        <h3 class="mb-4 text-left">Finish:</h3>
-                                    </div>
-                                </div>
-                                <br><br>
-                                <h2 class="text-center text-success"><strong>SUCCESS !</strong></h2>
-                                <br>
-                                <div class="row justify-content-center">
-                                    <div class="col-3"> <img src="../../assets/images/pages/img-success.png"
-                                            class="img-fluid" alt="fit-image"> </div>
-                                </div>
-                                <br><br>
-                                <div class="row justify-content-center">
-                                    <div class="text-center col-7">
-                                        <h5 class="text-center purple-text">You Have Successfully Signed Up</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
+                    <div class="custom-datatable-entries">
+                        <div class="table-responsive border-bottom my-3">
+                            <table id="datatable" class="table table-striped dataTable" data-toggle="data-table" aria-describedby="datatable_info">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal</th>
+                                        <th>Pembeli</th>
+                                        <th>No HP</th>
+                                        <th>Tanggal Jemput</th>
+                                        <th>Status</th>
+                                        <th>Detail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($penjualans as $i => $penjualan)
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td>{{ $penjualan->created_at->format('d M Y') }}</td>
+                                            <td>{{ optional(optional($penjualan->pembelian)->pengepul)->username ?? '-' }}</td>
+                                            <td>{{ optional(optional($penjualan->pembelian)->pengepul)->phone ?? '-' }}</td>
+                                            <td>
+                                                @if ($penjualan->pembelian && $penjualan->pembelian->tanggal_jemput)
+                                                    {{ \Carbon\Carbon::parse($penjualan->pembelian->tanggal_jemput)->format('d M Y') }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($penjualan->status == 'waiting')
+                                                    <span class="badge bg-warning text-dark">Menunggu</span>
+                                                @elseif ($penjualan->status == 'accepted')
+                                                    <span class="badge bg-info">Diterima</span>
+                                                @elseif ($penjualan->status == 'finished')
+                                                    <span class="badge bg-success">Selesai</span>
+                                                @else
+                                                    <span class="badge bg-secondary">{{ ucfirst($penjualan->status) }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($penjualan->pembelian)
+                                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detailModal{{ $penjualan->id }}">Detail</button>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+
+                                        {{-- Modal Detail --}}
+                                        @if ($penjualan->pembelian)
+                                            <div class="modal fade" id="detailModal{{ $penjualan->id }}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-light">
+                                                            <h5 class="modal-title">Detail Transaksi</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p><strong>Nama Pembeli:</strong> {{ optional(optional($penjualan->pembelian)->pengepul)->username ?? '-' }}</p>
+                                                            <p><strong>No HP:</strong> {{ optional(optional($penjualan->pembelian)->pengepul)->phone ?? '-' }}</p>
+                                                            <p><strong>Nomor Armada:</strong> {{ $penjualan->pembelian->nomor_armada ?? '-' }}</p>
+                                                            <p><strong>Tanggal Jemput:</strong>
+                                                                @if ($penjualan->pembelian->tanggal_jemput)
+                                                                    {{ \Carbon\Carbon::parse($penjualan->pembelian->tanggal_jemput)->format('d M Y') }}
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </p>
+
+                                                            @if ($penjualan->pembelian->status == 'selesai' || $penjualan->pembelian->status == 'finished')
+                                                                <hr>
+                                                                <p><strong>Jumlah (Kg):</strong> {{ $penjualan->pembelian->jumlah_kg }}</p>
+                                                                <p><strong>Harga/kg:</strong> Rp {{ number_format($penjualan->pembelian->harga_perkg) }}</p>
+                                                                <p><strong>Total Harga:</strong> Rp {{ number_format($penjualan->pembelian->total_harga) }}</p>
+                                                                <p><strong>Kualitas:</strong> {{ ucfirst($penjualan->pembelian->kualitas) }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-muted py-3">Belum ada riwayat penjualan.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+
             </div>
-        </div> -->
+        </div>
+
+        </div>
+    </div>
+</div>
+
+@endsection

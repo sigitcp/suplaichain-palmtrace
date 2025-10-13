@@ -20,7 +20,7 @@
                                         <path d="M19.2036 8.66919V12.6792" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                         <path d="M21.2497 10.6741H17.1597" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
-                                    Tambah User Admin
+                                    Tambah User Sistem
                                 </span>
                             </button>
 

@@ -15,7 +15,6 @@ class Panen extends Model
         'jumlah_pokok',
         'jumlah_perpokok',
         'kualitas',
-
     ];
 
     public function lahan()

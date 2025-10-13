@@ -54,8 +54,7 @@ class KebunPetaniController extends Controller
             'hariPanenAktif',
             'panenTertinggi'
         ));
-    }
-    
+    } 
 
     public function storePanen(Request $request, $id)
     {
