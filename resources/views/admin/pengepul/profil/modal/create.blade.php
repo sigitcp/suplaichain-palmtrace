@@ -43,7 +43,7 @@
               <div class="col-md-12">
                 <label class="form-label">Link Google Maps:</label>
                 <input type="url" name="gmaps_link" class="form-control"
-                       value="{{ $profil->gmaps_link ?? '' }}" placeholder="https://maps.google.com/...">
+                       value="{{ $profil->gmap_link ?? '' }}" placeholder="https://maps.google.com/...">
               </div>
 
               <div class="col-md-6">

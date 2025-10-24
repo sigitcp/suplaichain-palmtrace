@@ -13,6 +13,8 @@ class RoleSeeder extends Seeder
             ['name' => 'admin', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'petani', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'pengepul', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'pks', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'refinery', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

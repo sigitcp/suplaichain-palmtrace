@@ -86,11 +86,13 @@
                                                 </button>
 
                                                 <!-- Tombol Delete -->
-                                                <button class="btn btn-sm btn-icon btn-danger"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#userDeleteValidationModal{{ $user->id }}">
-                                                    Delete
-                                                </button>
+                                                @if(Auth::id() !== $user->id)
+            <button class="btn btn-sm btn-icon btn-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#userDeleteValidationModal{{ $user->id }}">
+                Delete
+            </button>
+        @endif
                                             </div>
                                         </td>
                                     </tr>

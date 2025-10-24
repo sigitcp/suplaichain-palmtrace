@@ -21,6 +21,8 @@ class RoleMiddleware
             'admin' => 1,
             'petani' => 2,
             'pengepul' => 3,
+            'pks' => 4,
+            'refinery' => 5,
         ];
 
         if (!isset($roles[$roleName]) || $user->role_id != $roles[$roleName]) {

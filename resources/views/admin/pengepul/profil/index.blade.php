@@ -68,7 +68,7 @@
                                     </div>
                                     <div class="pb-2">
                                         <h6>Alamat:
-                                            @if($profil->gmaps_link)
+                                            @if($profil->gmap_link)
                                             <a href="{{ $profil->gmaps_link }}" target="_blank">
                                                 <strong class="ms-1">{{ $profil->alamat ?? '-' }}</strong>
                                             </a>
@@ -169,13 +169,6 @@
                 .bindPopup("Lokasi Kantor Pengepul: {{ $profil->nama_koperasi ?? 'Tidak diketahui' }}")
                 .openPopup();
             map.setView([lat, lng], 13);
-        @else
-            // Jika belum ada koordinat
-            var text = L.divIcon({
-                className: "text-center",
-                html: "<div style='background:white;padding:8px;border-radius:8px;'>Belum ada titik koordinat</div>"
-            });
-            L.marker([0.0645, 109.4050], { icon: text }).addTo(map);
         @endif
     });
 </script>

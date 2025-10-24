@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'username' => 'superadmin',
+                'username' => 'admin',
                 'password' => Hash::make('admin'),
                 'phone'    => '081234567890',
                 'role_id'  => 1, // admin
@@ -34,6 +34,24 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('pengepul'),
                 'phone'    => '081234567892',
                 'role_id'  => 3, // pengepul
+                'verified' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'username' => 'pks',
+                'password' => Hash::make('pks123'),
+                'phone'    => '081234567892',
+                'role_id'  => 4, 
+                'verified' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'username' => 'refinery',
+                'password' => Hash::make('refinery123'),
+                'phone'    => '081234567892',
+                'role_id'  => 5, 
                 'verified' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

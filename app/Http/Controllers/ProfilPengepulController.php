@@ -36,7 +36,7 @@ class ProfilPengepulController extends Controller
             'kapasitas_tbs' => 'required|numeric',
             'sertifikat_koperasi' => 'nullable|file|mimes:pdf|max:2048',
             'alamat' => 'required|string|max:500',
-            'gmaps_link' => 'nullable|url',
+            'gmap_link' => 'nullable|url',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'foto_kantor' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',

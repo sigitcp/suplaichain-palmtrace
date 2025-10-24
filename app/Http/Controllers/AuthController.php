@@ -23,16 +23,23 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
             $user = Auth::user();
 
-            // cek role
-            if ($user->role_id == 1) {
-                return "Login berhasil sebagai ADMIN dengan username: " . $user->username;
-            } elseif ($user->role_id == 2) {
-                return "Login berhasil sebagai PETANI dengan username: " . $user->username;
-            } elseif ($user->role_id == 3) {
-                return "Login berhasil sebagai PENGEPUL dengan username: " . $user->username;
+            // arahkan ke dashboard sesuai role
+            switch ($user->role_id) {
+                case 1:
+                    return redirect()->route('admin.dashboard.index');
+                case 2:
+                    return redirect()->route('petani.dashboard.index');
+                case 3:
+                    return redirect()->route('pengepul.dashboard.index');
+                case 4:
+                    return redirect()->route('pks.dashboard.index');
+                case 5:
+                    return redirect()->route('refinery.peta.index');
+                default:
+                    Auth::logout();
+                    return back()->withErrors(['username' => 'Role tidak dikenali!']);
             }
         }
 

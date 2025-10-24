@@ -10,11 +10,16 @@ class Artikel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'judul', 'isi', 'gambar', 'created_by'
+        'author_id',
+        'judul',
+        'isi',
+        'thumbnail',
+        'published',
     ];
 
-    public function admin()
+    // Relasi ke user (penulis)
+    public function author()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'author_id');
     }
 }

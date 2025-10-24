@@ -2,50 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pembelian;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\PenawaranTbs;
+use App\Models\PenjualanPetaniKePengepul;
+use App\Models\PenimbanganPengepul;
 
 class PenimbanganPengepulController extends Controller
 {
-    /**
-     * Tampilkan semua pembelian yang masih on_progress
-     */
     public function index()
     {
-        $pembelians = Pembelian::with(['penjualan.petani'])
-            ->where('status', 'on_progress')
-            ->latest()
+        $pengepulId = Auth::id();
+
+        // 1️⃣ Ambil penawaran TBS yang masih reserved
+        $penawaranTbs = PenawaranTbs::where('status', 'reserved')
+            ->where('reserved_by_pengepul_id', $pengepulId)
+            ->with('petani')
             ->get();
 
-        return view('pengepul.penimbangan.index', compact('pembelians'));
+        // 2️⃣ Ambil penjualan petani ke pengepul yang masih accepted
+        $penjualan = PenjualanPetaniKePengepul::where('status', 'accepted')
+            ->where('pengepul_id', $pengepulId)
+            ->with('petani')
+            ->get();
+
+        // 3️⃣ Gabungkan keduanya menjadi satu collection
+        $penawaran = $penawaranTbs->concat($penjualan);
+
+        return view('pengepul.penimbangan.index', compact('penawaran'));
     }
 
-    /**
-     * Update hasil penimbangan dan selesaikan transaksi
-     */
-    public function update(Request $request, $id)
+    public function store(Request $request)
     {
-        $request->validate([
-            'jumlah_kg' => 'required|numeric|min:1',
-            'harga_perkg' => 'required|numeric|min:1',
-            'kualitas' => 'required|string',
-        ]);
-
-        $pembelian = Pembelian::findOrFail($id);
-
-        $totalHarga = $request->jumlah_kg * $request->harga_perkg;
-
-        $pembelian->update([
-            'jumlah_kg' => $request->jumlah_kg,
-            'harga_perkg' => $request->harga_perkg,
-            'total_harga' => $totalHarga,
-            'kualitas' => $request->kualitas,
-            'status' => 'selesai',
-        ]);
-
-        // Ubah status penjualan menjadi selesai
-        $pembelian->penjualan->update(['status' => 'finished']);
-
-        return back()->with('success', 'Data penimbangan berhasil disimpan dan transaksi selesai.');
+        $rules = [
+            'tbs_baik_kg' => 'required|numeric|min:0',
+            'harga_baik_per_kg' => 'required|numeric|min:0',
+            'tbs_reject_kg' => 'nullable|numeric|min:0',
+            'harga_reject_per_kg' => 'nullable|numeric|min:0',
+            'catatan' => 'nullable|string',
+        ];
+    
+        // Tentukan sumber
+        if ($request->filled('penawaran_tbs_id')) {
+            $rules['penawaran_tbs_id'] = 'required|exists:penawaran_tbs,id';
+        } elseif ($request->filled('penjualan_id')) {
+            $rules['penjualan_id'] = 'required|exists:penjualan_petani_ke_pengepul,id';
+        } else {
+            return redirect()->back()->with('error', 'Sumber penimbangan tidak valid.');
+        }
+    
+        $validated = $request->validate($rules);
+    
+        // Hitung total
+        $validated['total_baik'] = $validated['tbs_baik_kg'] * $validated['harga_baik_per_kg'];
+        $validated['total_reject'] = ($validated['tbs_reject_kg'] ?? 0) * ($validated['harga_reject_per_kg'] ?? 0);
+        $validated['tanggal_penimbangan'] = now();
+    
+        // Simpan
+        $penimbangan = \App\Models\PenimbanganPengepul::create($validated);
+    
+        // Update status
+        if (isset($validated['penawaran_tbs_id'])) {
+            $penawaran = \App\Models\PenawaranTbs::find($validated['penawaran_tbs_id']);
+            $penawaran->update(['status' => 'finish']);
+        } else {
+            $penjualan = \App\Models\PenjualanPetaniKePengepul::find($validated['penjualan_id']);
+            $penjualan->update(['status' => 'finish']);
+        }
+    
+        return redirect()->back()->with('success', 'Data penimbangan berhasil disimpan.');
     }
+    
 }

@@ -31,16 +31,6 @@ class User extends Authenticatable
         return $this->hasMany(Lahan::class);
     }
 
-    public function penjualans()
-    {
-        return $this->hasMany(Penjualan::class, 'petani_id');
-    }
-
-    public function pembelians()
-    {
-        return $this->hasMany(Pembelian::class, 'pengepul_id');
-    }
-
     public function profilPengepul()
     {
         return $this->hasOne(ProfilPengepul::class);

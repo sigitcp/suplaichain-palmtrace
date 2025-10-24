@@ -1,106 +1,97 @@
 @extends('layouts.master')
+
 @section('container')
-
 <div class="container-fluid content-inner py-3">
+    <h4 class="mb-4">Penimbangan TBS</h4>
 
-    <div class="row justify-content-center">
-        <div class="col-sm-12 mt-4">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title" style="color: #858223;">Daftar Penimbangan Barang</h4>
+    {{-- Notifikasi --}}
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    @if($penawaran->isEmpty())
+        <div class="alert alert-info">Tidak ada penawaran TBS / penjualan petani yang belum selesai.</div>
+    @else
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Petani</th>
+                    <th>Estimasi (Kg)</th>
+                    <th>Status</th>
+                    <th>Sumber</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($penawaran as $index => $item)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $item->petani->username ?? '-' }}</td>
+                    <td>{{ number_format($item->estimasi_tbs_kg ?? 0, 2) }}</td>
+                    <td>
+                        <span class="badge 
+                            @if($item->status == 'reserved' || $item->status == 'accepted') bg-warning text-dark 
+                            @elseif($item->status == 'finish') bg-success 
+                            @else bg-secondary @endif">
+                            {{ ucfirst($item->status) }}
+                        </span>
+                    </td>
+                    <td>{{ $item instanceof \App\Models\PenawaranTbs ? 'Penawaran TBS' : 'Penjualan Petani' }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalPenimbangan{{ $item->id }}">
+                            Input Penimbangan
+                        </button>
+                    </td>
+                </tr>
+
+                {{-- Modal Penimbangan --}}
+                <div class="modal fade" id="modalPenimbangan{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form method="POST" action="{{ route('pengepul.penimbangan.store') }}">
+                            @csrf
+                            @if($item instanceof \App\Models\PenawaranTbs)
+                                <input type="hidden" name="penawaran_tbs_id" value="{{ $item->id }}">
+                            @else
+                                <input type="hidden" name="penjualan_id" value="{{ $item->id }}">
+                            @endif
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Input Penimbangan</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-2">
+                                        <label>TBS Baik (Kg)</label>
+                                        <input type="number" step="0.01" name="tbs_baik_kg" class="form-control" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label>Harga Baik per Kg</label>
+                                        <input type="number" step="0.01" name="harga_baik_per_kg" class="form-control" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label>TBS Reject (Kg)</label>
+                                        <input type="number" step="0.01" name="tbs_reject_kg" class="form-control">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label>Harga Reject per Kg</label>
+                                        <input type="number" step="0.01" name="harga_reject_per_kg" class="form-control">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label>Catatan</label>
+                                        <textarea name="catatan" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">Simpan Penimbangan</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
-                <div class="card-body">
-                    <div class="custom-datatable-entries">
-                        <div class="table-responsive border-bottom my-3">
-                            <table id="datatable1" class="table table-striped dataTable text-center align-middle" data-toggle="data-table">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Petani</th>
-                                        <th>Nomor Armada</th>
-                                        <th>Tanggal Jemput</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($pembelians as $index => $pembelian)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $pembelian->penjualan->petani->username ?? '-' }}</td>
-                                            <td>{{ $pembelian->nomor_armada }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($pembelian->tanggal_jemput)->format('d M Y') }}</td>
-                                            <td>
-                                                <span class="badge bg-info text-dark">Dalam Proses</span>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                                    data-bs-target="#penimbanganModal{{ $pembelian->id }}">
-                                                    Input Hasil
-                                                </button>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Modal Penimbangan -->
-                                        <div class="modal fade" id="penimbanganModal{{ $pembelian->id }}" tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <form action="{{ route('pengepul.penimbangan.update', $pembelian->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-header bg-light">
-                                                            <h5 class="modal-title">Input Hasil Penimbangan</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Jumlah (Kg)</label>
-                                                                <input type="number" name="jumlah_kg" class="form-control" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Harga per Kg (Rp)</label>
-                                                                <input type="number" name="harga_perkg" class="form-control" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Kualitas</label>
-                                                                <select name="kualitas" class="form-select" required>
-                                                                    <option value="">-- Pilih Kualitas --</option>
-                                                                    <option value="sangat baik">Sangat Baik</option>
-                                                                    <option value="baik">Baik</option>
-                                                                    <option value="cukup">Cukup</option>
-                                                                    <option value="kurang">Kurang</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-success">Simpan</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @empty
-                                        <tfoot>
-                                            <tr>
-                                                <td colspan="6" class="text-muted text-center py-3">
-                                                    <h5>Belum ada transaksi yang perlu ditimbang.</h5>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 </div>
-
 @endsection

@@ -23,8 +23,4 @@ class Lahan extends Model
         return $this->hasOne(DetailLahan::class);
     }
 
-    public function panens()
-    {
-        return $this->hasMany(Panen::class);
-    }
 }
